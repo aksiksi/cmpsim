@@ -182,7 +182,6 @@ inline void MI_protocol::do_snoop_M (Mreq *request)
     	break;
     case DATA:
     	fatal_error ("Should not see data for this line!  I have the line!");
-    	break;
     default:
         request->print_msg (my_table->moduleID, "ERROR");
         fatal_error ("Client: M state shouldn't see this message\n");

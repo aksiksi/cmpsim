@@ -1,2 +1,9 @@
 traces/
 .DS_Store
+CMakeLists.txt
+.idea/
+cmake-build-debug/
+*.o
+*.d
+*.a
+sim_trace

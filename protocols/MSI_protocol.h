@@ -10,7 +10,10 @@
 /** Cache states.  */
 typedef enum {
     MSI_CACHE_I = 1,
+    MSI_CACHE_IS,
+    MSI_CACHE_IM,
     MSI_CACHE_S,
+    MSI_CACHE_SM,
     MSI_CACHE_M
 } MSI_cache_state_t;
 
@@ -25,19 +28,26 @@ public:
     void process_cache_request (Mreq *request);
     void process_snoop_request (Mreq *request);
     void dump (void);
+    void debug(MSI_cache_state_t s);
 
     /* Functions that specify the actions to take on requests from the processor
      * when the cache is in various states
      */
     inline void do_cache_I (Mreq *request);
+    inline void do_cache_IS (Mreq *request);
+    inline void do_cache_IM (Mreq *request);
     inline void do_cache_S (Mreq * request);
+    inline void do_cache_SM (Mreq * request);
     inline void do_cache_M (Mreq *request);
 
     /* Functions that specify the actions to take on snooped requests
      * when the cache is in various states
      */
     inline void do_snoop_I (Mreq *request);
+    inline void do_snoop_IS (Mreq *request);
+    inline void do_snoop_IM (Mreq *request);
     inline void do_snoop_S (Mreq * request);
+    inline void do_snoop_SM (Mreq * request);
     inline void do_snoop_M (Mreq *request);
 };
 
