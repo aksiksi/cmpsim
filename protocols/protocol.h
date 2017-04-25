@@ -34,7 +34,7 @@ public:
     /** This virtual function must be implemented by all children
 	 * This function dumps the coherence state (Useful for debugging)
 	 */
-    virtual void dump (void) =0;  
+    virtual void dump (void) =0;
 
     /** These helper functions are provided to you to make it easier to
      * interface with the processor and bus.

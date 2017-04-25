@@ -8,18 +8,14 @@ extern Simulator *Sim;
 /*************************
  * Constructor/Destructor.
  *************************/
-MSI_protocol::MSI_protocol (Hash_table *my_table, Hash_entry *my_entry)
-    : Protocol (my_table, my_entry)
-{
+MSI_protocol::MSI_protocol(Hash_table *my_table, Hash_entry *my_entry)
+    : Protocol (my_table, my_entry) {
     this->state = MSI_CACHE_I;
 }
 
-MSI_protocol::~MSI_protocol ()
-{
-}
+MSI_protocol::~MSI_protocol() {}
 
-void MSI_protocol::dump (void)
-{
+void MSI_protocol::dump(void) {
     const char *block_states[7] = {"X","I","I","I","S","S","M"};
     fprintf (stderr, "MSI_protocol - state: %s\n", block_states[state]);
 }
@@ -28,8 +24,7 @@ void MSI_protocol::debug(MSI_cache_state_t s) {
     fprintf(stderr, "Current state: %d\n", state);
 }
 
-void MSI_protocol::process_cache_request (Mreq *request)
-{
+void MSI_protocol::process_cache_request(Mreq *request) {
     switch (state) {
         case MSI_CACHE_I: do_cache_I(request); break;
         case MSI_CACHE_IS: do_cache_IS(request); break;
@@ -43,8 +38,7 @@ void MSI_protocol::process_cache_request (Mreq *request)
     }
 }
 
-void MSI_protocol::process_snoop_request (Mreq *request)
-{
+void MSI_protocol::process_snoop_request(Mreq *request) {
     switch (state) {
         case MSI_CACHE_I: do_snoop_I(request); break;
         case MSI_CACHE_IS: do_snoop_IS(request); break;
@@ -58,8 +52,7 @@ void MSI_protocol::process_snoop_request (Mreq *request)
     }
 }
 
-inline void MSI_protocol::do_cache_I (Mreq *request)
-{
+inline void MSI_protocol::do_cache_I(Mreq *request) {
     switch (request->msg) {
         case LOAD:
             // Go to IS state to wait for data
@@ -80,7 +73,7 @@ inline void MSI_protocol::do_cache_I (Mreq *request)
 }
 
 
-inline void MSI_protocol::do_cache_IS (Mreq *request) {
+inline void MSI_protocol::do_cache_IS(Mreq *request) {
     switch (request->msg) {
         case LOAD:
         case STORE:
@@ -93,7 +86,7 @@ inline void MSI_protocol::do_cache_IS (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_cache_IM (Mreq *request) {
+inline void MSI_protocol::do_cache_IM(Mreq *request) {
     switch (request->msg) {
         case LOAD:
         case STORE:
@@ -106,8 +99,7 @@ inline void MSI_protocol::do_cache_IM (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_cache_S (Mreq *request)
-{
+inline void MSI_protocol::do_cache_S(Mreq *request) {
     switch (request->msg) {
         case LOAD:
             // Stay in S state
@@ -125,7 +117,7 @@ inline void MSI_protocol::do_cache_S (Mreq *request)
     }
 }
 
-inline void MSI_protocol::do_cache_SM (Mreq *request) {
+inline void MSI_protocol::do_cache_SM(Mreq *request) {
     switch (request->msg) {
         case LOAD:
         case STORE:
@@ -138,8 +130,7 @@ inline void MSI_protocol::do_cache_SM (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_cache_M (Mreq *request)
-{
+inline void MSI_protocol::do_cache_M(Mreq *request) {
     switch (request->msg) {
         case LOAD:
         case STORE:
@@ -153,8 +144,7 @@ inline void MSI_protocol::do_cache_M (Mreq *request)
     }
 }
 
-inline void MSI_protocol::do_snoop_I (Mreq *request)
-{
+inline void MSI_protocol::do_snoop_I(Mreq *request) {
     switch (request->msg) {
         case GETS:
         case GETM:
@@ -168,7 +158,7 @@ inline void MSI_protocol::do_snoop_I (Mreq *request)
     }
 }
 
-inline void MSI_protocol::do_snoop_IS (Mreq *request) {
+inline void MSI_protocol::do_snoop_IS(Mreq *request) {
     switch (request->msg) {
         case GETS:
         case GETM:
@@ -185,7 +175,7 @@ inline void MSI_protocol::do_snoop_IS (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_snoop_IM (Mreq *request) {
+inline void MSI_protocol::do_snoop_IM(Mreq *request) {
     switch (request->msg) {
         case GETS:
         case GETM:
@@ -202,8 +192,7 @@ inline void MSI_protocol::do_snoop_IM (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_snoop_S (Mreq *request)
-{
+inline void MSI_protocol::do_snoop_S(Mreq *request) {
     switch (request->msg) {
         case GETS:
             // Stay in S
@@ -218,14 +207,14 @@ inline void MSI_protocol::do_snoop_S (Mreq *request)
     }
 }
 
-inline void MSI_protocol::do_snoop_SM (Mreq *request) {
+inline void MSI_protocol::do_snoop_SM(Mreq *request) {
     switch (request->msg) {
         case GETS:
         case GETM:
             // Ignore, wait for data
             break;
         case DATA:
-            // Data received, pass to proc and go to S
+            // Data received, pass to proc and go to M
             send_DATA_to_proc(request->addr);
             state = MSI_CACHE_M;
             break;
@@ -235,20 +224,17 @@ inline void MSI_protocol::do_snoop_SM (Mreq *request) {
     }
 }
 
-inline void MSI_protocol::do_snoop_M (Mreq *request)
-{
+inline void MSI_protocol::do_snoop_M(Mreq *request) {
     switch (request->msg) {
         case GETS:
             // Move to S, INTERVENE
             // Send data to requesting cache directly ($-$ transfer)
             send_DATA_on_bus(request->addr, request->src_mid);
-//            Sim->cache_to_cache_transfers++;
             state = MSI_CACHE_S;
             break;
         case GETM:
             // Invalidate and INTERVENE
             send_DATA_on_bus(request->addr, request->src_mid);
-//            Sim->cache_to_cache_transfers++;
             state = MSI_CACHE_I;
             break;
         default:
