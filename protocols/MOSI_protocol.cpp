@@ -251,11 +251,11 @@ inline void MOSI_protocol::do_snoop_O(Mreq *request) {
             // Also, perform xfer
             set_shared_line();
             state = MOSI_CACHE_O;
-            send_DATA_on_bus(request->addr,request->src_mid);
+            send_DATA_on_bus(request->addr, request->src_mid);
             break;
         case GETM:
             // Invalidate
-            send_DATA_on_bus(request->addr,request->src_mid);
+            send_DATA_on_bus(request->addr, request->src_mid);
             set_shared_line();
             state = MOSI_CACHE_I;
             break;
