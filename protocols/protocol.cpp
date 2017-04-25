@@ -63,13 +63,13 @@ void Protocol::send_DATA_to_proc(paddr_t addr)
 	this->my_table->write_to_proc(new_request);
 }
 
-void Protocol::set_shared_line ()
+void Protocol::set_shared_line()
 {
 	// Set the bus' shared line
 	Sim->bus->shared_line = true;
 }
 
-bool Protocol::get_shared_line ()
+bool Protocol::get_shared_line()
 {
 	// Find out if the shared line is active
 	return Sim->bus->is_shared_active();

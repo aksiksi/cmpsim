@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <strings.h>
+#include <iostream>
 
 #include "hash_table.h"
 #include "processor.h"
@@ -76,11 +77,16 @@ void Simulator::dump_stats ()
     {
     	get_L1(i)->dump_hash_table();
     }
+
     fprintf(stderr,"\nRun Time:         %8lld cycles\n",global_clock);
     fprintf(stderr,"Cache Misses:     %8ld misses\n",cache_misses);
     fprintf(stderr,"Cache Accesses:   %8ld accesses\n",cache_accesses);
     fprintf(stderr,"Silent Upgrades:  %8ld upgrades\n",silent_upgrades);
     fprintf(stderr,"$-to-$ Transfers: %8ld transfers\n",cache_to_cache_transfers);
+
+    // Print in CSV format
+    std::cout << global_clock << "," << cache_accesses << "," << cache_misses << ",";
+    std::cout << silent_upgrades << "," << cache_to_cache_transfers << std::endl;
 }
 
 void Simulator::run ()

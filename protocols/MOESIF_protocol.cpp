@@ -15,7 +15,7 @@ MOESIF_protocol::MOESIF_protocol (Hash_table *my_table, Hash_entry *my_entry)
 
 MOESIF_protocol::~MOESIF_protocol() {}
 
-void MOESIF_protocol::dump (void)
+void MOESIF_protocol::dump(void)
 {
     const char *block_states[] = {"X","I","I","I","S","S","E","O","O","M","F","F"};
     fprintf (stderr, "MOESIF_protocol - state: %s\n", block_states[state]);
@@ -367,7 +367,7 @@ inline void MOESIF_protocol::do_snoop_SM(Mreq *request) {
 inline void MOESIF_protocol::do_snoop_E(Mreq *request) {
     switch (request->msg) {
         case GETS:
-            // Downgrade to S, initiate $-$ transfer
+            // Downgrade to F, initiate $-$ transfer
             // Remember, no one knows we have this block!
             set_shared_line();
             send_DATA_on_bus(request->addr, request->src_mid);
@@ -430,7 +430,7 @@ inline void MOESIF_protocol::do_snoop_OM(Mreq *request) {
 inline void MOESIF_protocol::do_snoop_M(Mreq *request) {
     switch (request->msg) {
         case GETS:
-            // Move to S, INTERVENE
+            // Move to O, INTERVENE
             // Send data to requesting cache directly ($-$ transfer)
             set_shared_line();
             send_DATA_on_bus(request->addr, request->src_mid);
