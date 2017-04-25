@@ -23,7 +23,7 @@ clean :
 	-for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
 
 archive:
-	tar -cvf aksiksi3.tar.gz protocols/ project3-report.pdf
+	tar -cvf aksiksi3.tar.gz protocols/ project3-report.pdf run_exp.py README.md
 
 .PHONY: archive
 
