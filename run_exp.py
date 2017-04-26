@@ -1,5 +1,7 @@
 # Script that runs ./sim_trace for all experiments for each protocol
 # Requires Python 3.5+
+# IMPORTANT NOTE: Assumes that script is located in `project3` directory!!
+
 import os
 import subprocess
 
@@ -64,6 +66,7 @@ def main():
         for row in v:
             print(','.join(row))
 
+    # Print per-experiment data in CSV format
     for i, e in enumerate(exp_data):
         print('Data for exp ' + str(i+1))
         for row in e:
